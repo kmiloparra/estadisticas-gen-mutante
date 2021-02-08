@@ -30,6 +30,7 @@ export class DynamoAdapterImpl implements DynamoAdapter {
         countHumano += queryOutput.Items.filter((item) => item.esMutante == "false").length;
         lastEvaluatedKey = queryOutput.LastEvaluatedKey;
       } while (lastEvaluatedKey);
+      countHumano = countHumano === 0 ? 1 : countHumano;
       console.log(
         "countMutante: ",
         countMutante,
@@ -38,11 +39,13 @@ export class DynamoAdapterImpl implements DynamoAdapter {
         " ratio",
         countMutante / countHumano,
       );
-      return Promise.resolve(new EstadisticasGenMutanteResponse(countMutante,countHumano,countMutante / countHumano));
+
+      return Promise.resolve(
+        new EstadisticasGenMutanteResponse(countMutante, countHumano, countMutante / countHumano),
+      );
     } catch (error) {
-      console.log("error consultar: ",error);
+      console.log("error consultar: ", error);
       throw "Error Obteniendo la Data desde DynamoDB";
     }
   }
-
 }
